@@ -950,7 +950,9 @@
                     <div class="benefit-icon">🤝</div>
                     <h3 class="benefit-title">Flexible Repayment Plans</h3>
                     <p class="benefit-description">We work with your timeline, not against it. Choose a repayment plan that fits your budget and your schedule.</p>
-                    <div class="benefit-image">[Image: Calendar with flexible dates, person planning monthly budget]</div>
+                    <div class="benefit-image">
+                      <img src="flexible.png" alt="Calendar with flexible dates, person planning monthly budget">
+                    </div>
                 </div>
             </div>
         </div>
@@ -1327,58 +1329,6 @@
     <!-- Multi-step Loan Application Modal (added) -->
     <style>
     /* Modal styles - ensure centered placement and prevent background scroll when open */
-    .modal[hidden]{ display:none; }
-    .modal {
-      position: fixed;
-      inset: 0;
-      z-index: 2000;
-      display: flex;
-      align-items: center !important;      /* strong centering */
-      justify-content: center !important;  /* strong centering */
-      padding: 20px;
-      overflow: auto;
-    }
-
-    body.modal-open { overflow: hidden; } /* prevents background scrolling */
-
-    .modal-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(2px);
-      z-index: 0;
-    }
-
-    .modal-dialog {
-      position: relative;
-      background: #fff;
-      color: #1f2937;
-      width: clamp(320px, 92%, 920px); /* predictable responsive width */
-      max-height: calc(100vh - 40px);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 20px 60px rgba(10,10,10,0.35);
-      overflow-y: auto;
-      z-index: 1;
-      box-sizing: border-box;
-      margin: 0 auto; /* ensure horizontal centering in older browsers */
-    }
-
-    /* keep header/layout styles */
-    .modal-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
-    .modal h2 { font-size:1.25rem; margin:0; }
-    .step-indicator { font-size:0.95rem; color:#374151; opacity:0.9; }
-    .modal-close {
-      background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:#374151;
-    }
-
-    @media (max-width:640px) {
-      .modal { padding: 12px; }
-      .modal-dialog { width: calc(100% - 24px); max-height: calc(100vh - 24px); padding: 14px; }
-      .modal-close { font-size: 1.2rem; }
-    }
-
-    /* Modal styles - lightweight, responsive, accessible */
     .modal[hidden]{ display:none; }
     .modal {
       position: fixed;
