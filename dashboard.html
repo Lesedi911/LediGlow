@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Dashboard — LediGlow</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family:Inter,system-ui;background:linear-gradient(180deg,#faf3ea,#efe3d1);margin:0;padding:40px;display:flex;align-items:center;justify-content:center;min-height:100vh}
+    .card{background:white;padding:28px;border-radius:12px;max-width:720px;width:100%;box-shadow:0 12px 40px rgba(13,79,60,0.08)}
+    .btn{background:linear-gradient(135deg,#d4af37,#f5c842);border:none;padding:8px 12px;border-radius:8px;color:#063;cursor:pointer}
+  </style>
+</head>
+<body>
+  <main class="card" id="app" role="main" aria-live="polite">
+    <h1>Dashboard</h1>
+    <p id="welcome">Loading...</p>
+    <div style="margin-top:18px">
+      <button id="logout" class="btn">Log out</button>
+    </div>
+  </main>
+
+  <script>
+    (async function(){
+      const welcome = document.getElementById('welcome');
+      const logout = document.getElementById('logout');
+
+      try {
+        const res = await fetch('/api/me');
+        if(res.ok){
+          const data = await res.json();
+          welcome.textContent = `Welcome, ${data.email}`;
+        } else {
+          // fallback: if localStorage has email, use it; otherwise redirect to login
+          const fallback = localStorage.getItem('ledi_user_email');
+          if(fallback) welcome.textContent = `Welcome, ${fallback} (offline demo)`;
+          else window.location.href = 'login.html';
+        }
+      } catch(e){
+        const fallback = localStorage.getItem('ledi_user_email');
+        if(fallback) welcome.textContent = `Welcome, ${fallback} (offline demo)`;
+        else window.location.href = 'login.html';
+      }
+
+      logout.addEventListener('click', async () => {
+        try {
+          await fetch('/api/logout',{ method:'POST' });
+        } catch(e){}
+        localStorage.removeItem('ledi_user_email');
+        window.location.href = 'login.html';
+      });
+    })();
+  </script>
+</body>
+</html>

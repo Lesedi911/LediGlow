@@ -145,15 +145,43 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
             background-size: 50px 50px;
-            animation: drift 20s linear infinite;
-            opacity: 0.3;
+            animation: drift 15s linear infinite;
+            opacity: 0.6;
         }
 
         @keyframes drift {
             0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
+            100% { transform: translate(100px, 100px); }
+        }
+
+        /* Falling dollar signs animation */
+        @keyframes fallDollar {
+            0% {
+                transform: translateY(-100px) rotateZ(0deg);
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(800px) rotateZ(360deg);
+                opacity: 0;
+            }
+        }
+
+        .falling-dollar {
+            position: absolute;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--rich-gold);
+            opacity: 0.6;
+            pointer-events: none;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            animation: fallDollar linear forwards;
+            z-index: 1;
+            top: -50px;
         }
 
         .hero h1 {
@@ -162,7 +190,7 @@
             margin-bottom: 25px;
             line-height: 1.2;
             text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-            animation: fadeInUp 1s ease-out;
+            animation: fadeInUp 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             z-index: 2;
         }
@@ -176,7 +204,7 @@
             margin-right: auto;
             font-weight: 300;
             letter-spacing: 0.5px;
-            animation: fadeInUp 1s ease-out 0.2s both;
+            animation: fadeInUp 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
             position: relative;
             z-index: 2;
         }
@@ -184,11 +212,11 @@
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(60px) scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -210,7 +238,7 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.3);
             position: relative;
             z-index: 2;
-            animation: fadeInUp 1s ease-out 0.4s both;
+            animation: fadeInUp 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s both;
             overflow: hidden;
         }
 
@@ -766,85 +794,105 @@
             }
         }
 
-        /* Smooth Scroll */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Scroll animations */
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Modal styles - ensure centered placement and prevent background scroll when open */
-        .modal[hidden]{ display:none; }
-        .modal {
+        /* Cookie consent banner - themed (wood + gold), subtle futuristic glow */
+        .cookie-banner {
           position: fixed;
-          inset: 0;
-          z-index: 2000;
+          right: 24px;
+          bottom: 24px;
+          left: 24px;
+          max-width: 980px;
+          margin: 0 auto;
           display: flex;
-          align-items: center !important;      /* strong centering */
-          justify-content: center !important;  /* strong centering */
-          padding: 20px;
-          overflow: auto;
+          gap: 18px;
+          align-items: center;
+          padding: 18px 20px;
+          border-radius: 14px;
+          background: linear-gradient(180deg, rgba(243,230,208,0.98), rgba(225,201,166,0.95));
+          border: 1px solid rgba(187,125,40,0.12);
+          box-shadow: 0 10px 50px rgba(13,79,60,0.12), 0 4px 18px rgba(212,175,55,0.06);
+          z-index: 3000;
+          transform: translateY(20px);
+          opacity: 0;
+          transition: transform 420ms cubic-bezier(.16,1,.3,1), opacity 420ms cubic-bezier(.16,1,.3,1);
+          font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
         }
+        .cookie-banner.show { transform: translateY(0); opacity: 1; }
+        .cookie-icon { min-width:64px; min-height:64px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.06)); color:var(--deep-green); font-weight:900; font-size:1.2rem; box-shadow:0 8px 26px rgba(212,175,55,0.12), inset 0 1px 0 rgba(255,255,255,0.25); }
+        .cookie-content { flex:1; min-width:0; }
+        .cookie-content h4 { margin:0 0 6px 0; font-size:1rem; color:var(--deep-green); font-weight:800; }
+        .cookie-content p { margin:0; color:#475b50; font-size:0.95rem; line-height:1.3; opacity:0.95; }
+        .cookie-actions { display:flex; gap:10px; align-items:center; }
+        .btn-cookie { border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; border:none; font-size:0.95rem; }
+        .btn-accept { background: linear-gradient(135deg,var(--rich-gold),var(--warm-yellow)); color:var(--deep-green); box-shadow:0 10px 30px rgba(212,175,55,0.25), 0 0 14px rgba(212,175,55,0.12); }
+        .btn-decline { background:transparent; border:1px solid rgba(13,79,60,0.08); color:#334b3f; }
+        .btn-manage { background: rgba(0,0,0,0.06); color:#243a31; border:none; }
+        .cookie-close { background:transparent; border:none; color:rgba(10,10,10,0.45); font-size:18px; cursor:pointer; padding:6px; border-radius:6px; }
+        @media (prefers-reduced-motion: reduce) { .cookie-banner { transition:none; } }
 
-        body.modal-open { overflow: hidden; } /* prevents background scrolling */
+        /* --- AUTH (Sign in / Sign up) Split Panel - futuristic animated --- */
+        .auth-overlay { position: fixed; inset: 0; background: rgba(4,6,5,0.45); display: none; place-items:center; z-index:4000; backdrop-filter: blur(6px); }
+        .auth-overlay.show { display: grid; animation: fadeIn 320ms cubic-bezier(.16,1,.3,1) both; }
+        @keyframes fadeIn { from{opacity:0; transform:scale(.995)} to{opacity:1; transform:none} }
 
-        .modal-backdrop {
-          position: absolute;
-          inset: 0;
-          background: rgba(0,0,0,0.55);
-          backdrop-filter: blur(2px);
-          z-index: 0;
-        }
-
-        .modal-dialog {
+        .auth-card {
+          width: min(980px, 94%);
+          max-width: 980px;
+          height: 520px;
+          border-radius: 20px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          overflow: hidden;
           position: relative;
-          background: #fff;
-          color: #1f2937;
-          width: clamp(320px, 92%, 920px); /* predictable responsive width */
-          max-height: calc(100vh - 40px);
-          border-radius: 12px;
-          padding: 20px;
-          box-shadow: 0 20px 60px rgba(10,10,10,0.35);
-          overflow-y: auto;
-          z-index: 1;
-          box-sizing: border-box;
-          margin: 0 auto; /* ensure horizontal centering in older browsers */
+          box-shadow: 0 40px 120px rgba(8,20,18,0.45);
+          background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+          border: 1px solid rgba(255,255,255,0.04);
+          backdrop-filter: blur(8px) saturate(120%);
         }
 
-        /* keep header/layout styles */
-        .modal-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
-        .modal h2 { font-size:1.25rem; margin:0; }
-        .step-indicator { font-size:0.95rem; color:#374151; opacity:0.9; }
-        .modal-close {
-          background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:#374151;
+        .auth-orb {
+          position:absolute; border-radius:50%; filter:blur(40px); opacity:0.18; pointer-events:none;
+        }
+        .auth-orb.a{ width:260px;height:260px; right:-40px; top:-60px; background:linear-gradient(135deg,#7b2cbf,#00b4d8); transform:rotate(25deg); animation:orb 8s ease-in-out infinite; }
+        .auth-orb.b{ width:180px;height:180px; left:-50px; bottom:-40px; background:linear-gradient(135deg,#ffd166,#ff7b00); animation:orb 10s ease-in-out infinite reverse; }
+        @keyframes orb { 0%{transform:translateY(0) rotate(0)}50%{transform:translateY(14px) rotate(20deg)}100%{transform:translateY(0) rotate(0)} }
+
+        /* Left & right panels */
+        .auth-left, .auth-right {
+          padding: 42px;
+          display:flex; flex-direction:column; justify-content:center; gap:12px;
+          background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+          color:var(--deep-green);
+        }
+        .auth-left { background-image: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(13,79,60,0.02)); }
+        .auth-right { background: linear-gradient(90deg, rgba(75,32,130,0.12), rgba(0,178,150,0.06)); color: #fff; }
+
+        /* Forms */
+        .auth-form { width:100%; max-width:340px; }
+        .auth-form label { display:block; margin-bottom:6px; font-weight:700; color:inherit; }
+        .auth-form input[type="email"], .auth-form input[type="password"] {
+          width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.03); color:inherit;
+          font-size:1rem; margin-bottom:10px;
+        }
+        .auth-form .btn { width:100%; padding:12px; border-radius:12px; border:none; font-weight:800; cursor:pointer; }
+        .auth-form .btn.primary { background: linear-gradient(135deg,var(--rich-gold),var(--warm-yellow)); color:var(--deep-green); box-shadow:0 12px 30px rgba(212,175,55,0.18); }
+        .auth-form .helper { font-size:0.88rem; color:rgba(255,255,255,0.8); margin-top:8px; }
+
+        /* split flip animation */
+        .auth-card.is-signup { transform-origin: center; } /* reserved */
+        .auth-switch { background:transparent; border:2px solid rgba(255,255,255,0.06); color:inherit; padding:8px 12px; border-radius:10px; cursor:pointer; }
+
+        /* Mobile adjustments */
+        @media (max-width:860px) {
+          .auth-card { grid-template-columns: 1fr; height:auto; padding:28px; }
+          .auth-left, .auth-right { padding:22px; }
+          .auth-orb.a{ display:none; }
         }
 
-        @media (max-width:640px) {
-          .modal { padding: 12px; }
-          .modal-dialog { width: calc(100% - 24px); max-height: calc(100vh - 24px); padding: 14px; }
-          .modal-close { font-size: 1.2rem; }
+        /* accessibility: respect reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+          .auth-orb, .auth-card, .auth-overlay { animation: none; transition: none; }
         }
+
     </style>
 </head>
 <body>
@@ -852,12 +900,16 @@
     <nav class="navbar">
         <div class="container">
             <div class="logo">LediGlow</div>
-            <ul class="nav-links">
+            <!-- main nav (kept simple) + auth CTAs -->
+            <ul class="nav-links" aria-label="Primary navigation">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#calculator">Calculator</a></li>
                 <li><a href="#benefits">Benefits</a></li>
-                <li><a href="#apply">Apply Now</a></li>
+                <li><a href="#apply" data-open="apply">Apply Now</a></li>
             </ul>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <button id="authTrigger" class="cta-button" style="padding:10px 18px;font-size:0.95rem;border-radius:10px;background:linear-gradient(135deg,var(--rich-gold),var(--warm-yellow)); border:0; cursor:pointer;">Sign In</button>
+            </div>
         </div>
     </nav>
 
@@ -1014,6 +1066,67 @@
         </div>
     </section>
 
+    <!-- Cookie consent banner (appears on first visit) -->
+    <div id="cookieBanner" class="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
+      <div class="cookie-icon" aria-hidden="true">LG</div>
+      <div class="cookie-content">
+        <h4>We use cookies for a better experience</h4>
+        <p>We and our partners use cookies to personalise content, measure performance and improve the site. Choose your preference.</p>
+      </div>
+      <div class="cookie-actions" aria-hidden="false">
+        <button id="cookieAccept" class="btn-cookie btn-accept">Accept</button>
+        <button id="cookieManage" class="btn-cookie btn-manage">Manage</button>
+        <button id="cookieDecline" class="btn-cookie btn-decline">Decline</button>
+        <button id="cookieClose" class="cookie-close" aria-label="Close cookie banner">&times;</button>
+      </div>
+    </div>
+
+    <!-- Combined Sign In / Sign Up Animated Panel -->
+    <div id="authOverlay" class="auth-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Sign in or sign up">
+      <div class="auth-card" role="document">
+        <div class="auth-orb a" aria-hidden="true"></div>
+        <div class="auth-orb b" aria-hidden="true"></div>
+
+        <div class="auth-left">
+          <h2 style="margin:0 0 6px;font-size:1.6rem;">Sign In</h2>
+          <p style="margin:0 0 12px;color:rgba(0,0,0,0.55)">Welcome back — use your email or continue with social.</p>
+
+          <form id="signinForm" class="auth-form" method="post" action="/api/login" novalidate>
+            <label for="siEmail">Email</label>
+            <input id="siEmail" name="email" type="email" autocomplete="email" required>
+            <label for="siPassword">Password</label>
+            <input id="siPassword" name="password" type="password" autocomplete="current-password" required>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button type="submit" class="btn primary">Sign In</button>
+              <button type="button" id="switchToSignUp" class="auth-switch" aria-expanded="false">Create account</button>
+            </div>
+            <div class="helper">Forgot password? <a href="#" style="color:var(--deep-green)">Reset</a></div>
+          </form>
+        </div>
+
+        <div class="auth-right">
+          <h2 style="margin:0 0 6px;font-size:1.6rem;">Hello, Friend!</h2>
+          <p style="margin:0 0 18px;opacity:0.9">Register with your email and get started quickly. Optional social sign-in below.</p>
+
+          <form id="signupFormSmall" class="auth-form" method="post" action="/api/signup" novalidate>
+            <label for="suEmail">Email</label>
+            <input id="suEmail" name="email" type="email" autocomplete="email" required>
+            <label for="suPassword">Password</label>
+            <input id="suPassword" name="password" type="password" autocomplete="new-password" required>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button type="submit" class="btn primary">Sign Up</button>
+              <button type="button" id="switchToSignIn" class="auth-switch" aria-expanded="false">Sign In</button>
+            </div>
+            <div class="helper">Or continue with</div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button type="button" disabled style="flex:1;padding:8px;border-radius:8px;background:rgba(255,255,255,0.06);border:0;color:inherit;">Google</button>
+              <button type="button" disabled style="flex:1;padding:8px;border-radius:8px;background:rgba(255,255,255,0.06);border:0;color:inherit;">Apple</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <!-- WhatsApp Floating Button (inserted) -->
     <style id="wh-fab-styles">
       :root{
@@ -1142,16 +1255,65 @@
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
+                // anchors marked to open the modal should not trigger smooth scroll
+                if (this.dataset && this.dataset.open === 'apply') return;
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
         });
+
+        // Create falling dollar signs in hero section
+        function createFallingDollars() {
+            const hero = document.querySelector('.hero');
+            if (!hero) return;
+
+            function createDollar() {
+                const dollar = document.createElement('div');
+                dollar.className = 'falling-dollar';
+                dollar.textContent = '$';
+                
+                // Random horizontal position across hero width
+                const randomLeft = Math.random() * 100;
+                dollar.style.left = randomLeft + '%';
+                
+                // Random animation duration (3-8 seconds)
+                const duration = Math.random() * 5 + 3;
+                dollar.style.animationDuration = duration + 's';
+                
+                // Random delay (0-2 seconds)
+                const delay = Math.random() * 2;
+                dollar.style.animationDelay = delay + 's';
+                
+                hero.appendChild(dollar);
+                
+                // Remove element after animation completes
+                setTimeout(() => {
+                    dollar.remove();
+                }, (duration + delay) * 1000);
+            }
+
+            // Create initial dollars
+            for (let i = 0; i < 8; i++) {
+                setTimeout(createDollar, i * 300);
+            }
+
+            // Continue creating dollars every 800ms while on hero section
+            let dollarInterval = setInterval(() => {
+                const heroRect = hero.getBoundingClientRect();
+                // Stop if hero section is completely out of view
+                if (heroRect.bottom < 0 || heroRect.top > window.innerHeight) {
+                    clearInterval(dollarInterval);
+                    return;
+                }
+                createDollar();
+            }, 800);
+        }
+
+        // Initialize falling dollars on load
+        window.addEventListener('load', createFallingDollars);
 
         // Enhanced scroll animations
         const observerOptions = {
@@ -1590,7 +1752,7 @@
       // Elements
       const modal = document.getElementById('loanModal');
       const dialog = modal.querySelector('.modal-dialog');
-      const openButtons = Array.from(document.querySelectorAll('a.cta-button'));
+      const openButtons = Array.from(document.querySelectorAll('a.cta-button, a[data-open="apply"]'));
       const closeButtons = modal.querySelectorAll('[data-action="close"], [data-action="cancel"]');
       const backdrop = modal.querySelector('[data-action="backdrop"]');
       const form = document.getElementById('loanForm');
@@ -1631,7 +1793,7 @@
           if(savedStep && savedStep >=1 && savedStep <= totalSteps) {
             showStep(savedStep);
           }
-        } catch(e){ console.warn('restore error', e); }
+        } catch(e) { console.warn('restore error', e); }
       }
 
       // save form data (non-files)
@@ -1886,5 +2048,107 @@
     })();
     </script>
     <!-- end modal -->
-  </body>
+
+    <script>
+    // Cookie banner logic (stores choice in localStorage)
+    (function(){
+      const KEY = 'ledi_cookie_consent_v1';
+      const banner = document.getElementById('cookieBanner');
+      const accept = document.getElementById('cookieAccept');
+      const decline = document.getElementById('cookieDecline');
+      const manage = document.getElementById('cookieManage');
+      const closeBtn = document.getElementById('cookieClose');
+
+      function getConsent(){ try{ return localStorage.getItem(KEY); }catch(e){return null;} }
+      function setConsent(v){ try{ localStorage.setItem(KEY,v); }catch(e){} }
+      function show(){ banner.hidden = false; requestAnimationFrame(()=> banner.classList.add('show')); }
+      function hide(){ banner.classList.remove('show'); setTimeout(()=> banner.hidden=true, 450); }
+
+      // Show banner when no choice yet
+      if(!getConsent()){
+        if(document.readyState === 'complete' || document.readyState === 'interactive') show(); else window.addEventListener('DOMContentLoaded', show, {once:true});
+      } else {
+        // apply stored behavior (demo only)
+        if(getConsent() === 'accepted') console.log('cookies previously accepted');
+      }
+
+      accept && accept.addEventListener('click', ()=>{ setConsent('accepted'); hide(); /* placeholder: enable analytics */ });
+      decline && decline.addEventListener('click', ()=>{ setConsent('declined'); hide(); /* placeholder: disable trackers */ });
+      manage && manage.addEventListener('click', ()=>{ hide(); window.open('/privacy', '_blank', 'noopener'); });
+      closeBtn && closeBtn.addEventListener('click', ()=> hide());
+
+      // dismiss banner on heavy scroll to reduce intrusiveness
+      function onScroll(){
+        if(window.scrollY > 600 && banner && banner.classList.contains('show')){ hide(); window.removeEventListener('scroll', onScroll); }
+      }
+      window.addEventListener('scroll', onScroll, {passive:true});
+    })();
+    </script>
+
+    <script>
+    /* Wire the Sign In trigger to the combined auth overlay and add close/focus behavior. */
+    (function(){
+      const trigger = document.getElementById('authTrigger');
+      const overlay = document.getElementById('authOverlay');
+      const card = overlay && overlay.querySelector('.auth-card');
+      const switchToSignUp = document.getElementById('switchToSignUp');
+      const switchToSignIn = document.getElementById('switchToSignIn');
+      const siEmail = document.getElementById('siEmail');
+      const suEmail = document.getElementById('suEmail');
+
+      if (!trigger || !overlay) return;
+
+      let lastFocused = null;
+      function openAuth() {
+        lastFocused = document.activeElement;
+        overlay.classList.add('show');
+        overlay.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+        // focus the first visible input (signin by default)
+        setTimeout(()=> {
+          (siEmail && siEmail.focus()) || (suEmail && suEmail.focus());
+        }, 60);
+      }
+      function closeAuth() {
+        overlay.classList.remove('show');
+        overlay.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        try { if (lastFocused && lastFocused.focus) lastFocused.focus(); } catch(e){}
+      }
+
+      trigger.addEventListener('click', (e)=>{
+        e.preventDefault();
+        openAuth();
+      });
+
+      // click outside the card closes overlay
+      overlay.addEventListener('click', (e)=>{
+        if (e.target === overlay) closeAuth();
+      });
+
+      // stop clicks inside the card from bubbling to overlay
+      if (card) card.addEventListener('click', (e)=> e.stopPropagation());
+
+      // Escape closes overlay
+      document.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape' && overlay.classList.contains('show')) closeAuth();
+      });
+
+      // switches move focus to the appropriate field (no heavy animation)
+      if (switchToSignUp) switchToSignUp.addEventListener('click', ()=> { suEmail && suEmail.focus(); });
+      if (switchToSignIn) switchToSignIn.addEventListener('click', ()=> { siEmail && siEmail.focus(); });
+
+      // Optional: trap focus inside overlay while open (lightweight)
+      overlay.addEventListener('keydown', function(e){
+        if (e.key !== 'Tab' || !overlay.classList.contains('show')) return;
+        const focusable = Array.from(overlay.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+          .filter(el => el.offsetParent !== null);
+        if (!focusable.length) return;
+        const idx = focusable.indexOf(document.activeElement);
+        if (e.shiftKey && idx === 0) { e.preventDefault(); focusable[focusable.length-1].focus(); }
+        else if (!e.shiftKey && idx === focusable.length - 1) { e.preventDefault(); focusable[0].focus(); }
+      });
+    })();
+    </script>
+</body>
 </html>

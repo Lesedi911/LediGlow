@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Log in — LediGlow</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    /* reuse styling patterns from signup for consistency */
+    :root{ --deep-green:#0d4f3c; --rich-gold:#d4af37 }
+    body{font-family:Inter,system-ui;margin:0;padding:24px;background:linear-gradient(180deg,#faf3ea,#efe3d1);display:flex;align-items:flex-start;justify-content:center;min-height:100vh}
+    .card{width:100%;max-width:420px;background:white;border-radius:12px;padding:28px;box-shadow:0 10px 30px rgba(13,79,60,0.08)}
+    label{display:block;font-weight:700;margin-bottom:6px;color:var(--deep-green)}
+    input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #d1d5db;font-size:1rem}
+    .row{margin-bottom:14px}
+    .btn{background:linear-gradient(135deg,var(--rich-gold),#f5c842);border:none;padding:10px 14px;border-radius:10px;font-weight:700;color:var(--deep-green);cursor:pointer}
+    .small{font-size:0.9rem;color:#5b6b5f}
+    .error{color:#b91c1c;font-size:0.9rem;margin-top:8px}
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <h1 style="margin:0 0 8px;color:var(--deep-green)">Welcome back</h1>
+    <p class="small" style="margin-bottom:16px">Log in with your email and password.</p>
+
+    <form id="loginForm" method="post" action="/api/login" novalidate>
+      <div class="row">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required>
+        <div id="emailError" class="error" aria-live="polite"></div>
+      </div>
+
+      <div class="row">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <div id="pwError" class="error" aria-live="polite"></div>
+      </div>
+
+      <div class="row" style="display:flex;align-items:center;justify-content:space-between;">
+        <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" name="remember" id="remember"> <span class="small">Remember me</span></label>
+        <a href="#" id="forgot" class="small">Forgot password?</a>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="loginBtn" type="submit">Log in</button>
+      </div>
+
+      <div class="small">New here? <a href="signup.html">Create account</a></div>
+    </form>
+  </main>
+
+  <script>
+    (function(){
+      const form = document.getElementById('loginForm');
+      const email = document.getElementById('email');
+      const pw = document.getElementById('password');
+      const emailErr = document.getElementById('emailError');
+      const pwErr = document.getElementById('pwError');
+
+      function validate(){
+        emailErr.textContent = ''; pwErr.textContent = '';
+        let ok=true;
+        if(!email.value || !/^\S+@\S+\.\S+$/.test(email.value)) { emailErr.textContent = 'Enter a valid email'; ok=false; }
+        if(!pw.value) { pwErr.textContent = 'Enter your password'; ok=false; }
+        return ok;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if(!validate()) return;
+        document.getElementById('loginBtn').disabled = true;
+        try {
+          const res = await fetch('/api/login', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ email: email.value.trim(), password: pw.value })
+          });
+          const data = await res.json();
+          if(res.ok && data.ok) {
+            // store fallback to prefill dashboard demo
+            localStorage.setItem('ledi_user_email', email.value.trim());
+            window.location.href = data.redirect || '/dashboard.html';
+          } else {
+            // show server error
+            (data.field === 'email' ? emailErr : pwErr).textContent = data.message || 'Login failed';
+          }
+        } catch(err) {
+          emailErr.textContent = 'Network error';
+        } finally { document.getElementById('loginBtn').disabled = false; }
+      });
+    })();
+  </script>
+</body>
+</html>

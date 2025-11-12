@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sign up — LediGlow</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    /* minimal modular styles matching main site theme */
+    :root{ --deep-green:#0d4f3c; --rich-gold:#d4af37; --light-wood:#f3e6d0; }
+    body{font-family:Inter,system-ui,Arial;margin:0;padding:24px;background:linear-gradient(180deg,#faf3ea,#efe3d1);color:#153;display:flex;align-items:flex-start;justify-content:center;min-height:100vh}
+    .card{width:100%;max-width:480px;background:white;border-radius:12px;padding:28px;box-shadow:0 10px 30px rgba(13,79,60,0.08)}
+    h1{margin:0 0 8px;font-size:1.4rem;color:var(--deep-green)}
+    p.lead{margin:0 0 18px;color:#496; font-weight:300}
+    label{display:block;font-weight:700;margin-bottom:6px;color:var(--deep-green)}
+    input[type="email"],input[type="password"]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #d1d5db;font-size:1rem}
+    .row{margin-bottom:14px}
+    .actions{display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .btn{background:linear-gradient(135deg,var(--rich-gold),#f5c842);border:none;padding:10px 14px;border-radius:10px;font-weight:700;color:var(--deep-green);cursor:pointer}
+    .btn--ghost{background:transparent;border:1px solid rgba(13,79,60,0.08);padding:8px 12px}
+    .small{font-size:0.85rem;color:#5b6b5f}
+    .error{color:#b91c1c;font-size:0.9rem;margin-top:8px}
+    .pw-toggle{background:transparent;border:none;color:var(--deep-green);cursor:pointer;font-size:0.9rem;padding:6px}
+    .social{display:flex;gap:8px;margin-top:10px}
+    .social button{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:#fff;cursor:default}
+    .hint{font-size:0.85rem;color:#6b7a6f;margin-top:6px}
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <h1>Create your account</h1>
+    <p class="lead">Quick, secure sign up — email & password only. You can add profile info later.</p>
+
+    <form id="signupForm" method="post" action="/api/signup" novalidate>
+      <div class="row">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required aria-describedby="emailHelp">
+        <div id="emailHelp" class="small">We'll use this to log you in.</div>
+        <div id="emailError" class="error" aria-live="polite"></div>
+      </div>
+
+      <div class="row">
+        <label for="password">Password</label>
+        <div style="display:flex;gap:8px;">
+          <input id="password" name="password" type="password" autocomplete="new-password" required aria-describedby="pwHint" style="flex:1">
+          <button type="button" class="pw-toggle" id="pwToggle" aria-pressed="false" aria-label="Show password">Show</button>
+        </div>
+        <div id="pwHint" class="hint">Use 8+ characters. Include letters and numbers for strength.</div>
+        <div id="pwError" class="error" aria-live="polite"></div>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="createBtn" type="submit">Create account</button>
+        <a class="btn--ghost" href="login.html" style="text-decoration:none;margin-left:8px;display:inline-block">Already have an account? Log in</a>
+      </div>
+
+      <div class="small">Or continue with (optional)</div>
+      <div class="social" aria-hidden="true">
+        <button disabled>Continue with Google</button>
+        <button disabled>Continue with Apple</button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    // unobtrusive JS: inline validation, show/hide password, submit via fetch
+    (function(){
+      const form = document.getElementById('signupForm');
+      const email = document.getElementById('email');
+      const pw = document.getElementById('password');
+      const pwToggle = document.getElementById('pwToggle');
+      const emailErr = document.getElementById('emailError');
+      const pwErr = document.getElementById('pwError');
+
+      pwToggle.addEventListener('click', () => {
+        const is = pw.type === 'password';
+        pw.type = is ? 'text' : 'password';
+        pwToggle.textContent = is ? 'Hide' : 'Show';
+        pwToggle.setAttribute('aria-pressed', String(is));
+      });
+
+      function validate() {
+        emailErr.textContent = '';
+        pwErr.textContent = '';
+        let ok = true;
+        if(!email.value || !/^\S+@\S+\.\S+$/.test(email.value)) { emailErr.textContent = 'Enter a valid email'; ok = false; }
+        if(!pw.value || pw.value.length < 8) { pwErr.textContent = 'Password must be at least 8 characters'; ok = false; }
+        return ok;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        // progressive enhancement: allow normal form submit if JS disabled
+        e.preventDefault();
+        if(!validate()) return;
+        document.getElementById('createBtn').disabled = true;
+        try {
+          const res = await fetch('/api/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email.value.trim(), password: pw.value })
+          });
+          const data = await res.json();
+          if(res.ok && data.ok) {
+            // store minimal session fallback (optional) and redirect
+            localStorage.setItem('ledi_user_email', email.value.trim());
+            window.location.href = data.redirect || '/dashboard.html';
+          } else {
+            // server returned validation error
+            (data.field === 'email' ? emailErr : pwErr).textContent = data.message || 'Signup failed';
+          }
+        } catch(err) {
+          emailErr.textContent = 'Network error — try again';
+        } finally { document.getElementById('createBtn').disabled = false; }
+      });
+    })();
+  </script>
+</body>
+</html>
